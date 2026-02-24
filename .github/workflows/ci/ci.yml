@@ -1,0 +1,17 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  ci:
+    name: CI - Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: CI Process
+        run: echo "Este es el CI del proyecto"

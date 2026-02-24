@@ -1,0 +1,49 @@
+name: CD - Deploy to Develop
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: "Confirmar despliegue en Develop"
+        required: true
+        default: "yes"
+        type: choice
+        options:
+          - "yes"
+          - "no"
+
+jobs:
+  check-permissions:
+    name: Verify Permissions
+    runs-on: ubuntu-latest
+    if: inputs.confirm == 'yes'
+    steps:
+      - name: Verify deployer is admin
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PERMISSION=$(gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission --jq '.permission')
+          if [[ "$PERMISSION" != "admin" && "$PERMISSION" != "maintain" ]]; then
+            echo "❌ Solo usuarios con permisos de Admin o Maintain pueden ejecutar este workflow."
+            echo "   Usuario: ${{ github.actor }} | Permiso actual: $PERMISSION"
+            exit 1
+          fi
+          echo "✅ Permiso verificado: ${{ github.actor }} ($PERMISSION)"
+
+  deploy-develop:
+    name: Deploy to Develop
+    needs: check-permissions
+    runs-on: ubuntu-latest
+    environment: develop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Deploy
+        run: |
+          echo "🚀 Este tiene que ser aprobado por los Admins para desplegarse"
+          echo "📦 Desplegando en entorno: DEVELOP"
+          echo "👤 Ejecutado por: ${{ github.actor }}"
+          echo "🔀 Rama: develop"

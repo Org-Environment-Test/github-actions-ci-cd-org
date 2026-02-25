@@ -15,3 +15,6 @@ jobs:
 
       - name: CI Process
         run: echo "Este es el CI del proyecto"
+
+      - name: Codeowners Check
+        run: echo "Test para la revisión de codeowners"

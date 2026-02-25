@@ -1,0 +1,4 @@
+# .github/CODEOWNERS
+
+# Solo el equipo admins puede aprobar cambios dentro de .github
+.github/ @Org-Environment-Test/admins

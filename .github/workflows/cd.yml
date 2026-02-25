@@ -13,26 +13,8 @@ on:
           - "no"
 
 jobs:
-  check-permissions:
-    name: Verify Permissions
-    runs-on: ubuntu-latest
-    if: inputs.confirm == 'yes'
-    steps:
-      - name: Verify deployer is admin
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PERMISSION=$(gh api repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission --jq '.permission')
-          if [[ "$PERMISSION" != "admin" && "$PERMISSION" != "maintain" ]]; then
-            echo "❌ Solo usuarios con permisos de Admin o Maintain pueden ejecutar este workflow."
-            echo "   Usuario: ${{ github.actor }} | Permiso actual: $PERMISSION"
-            exit 1
-          fi
-          echo "✅ Permiso verificado: ${{ github.actor }} ($PERMISSION)"
-
   deploy-develop:
     name: Deploy to Develop
-    needs: check-permissions
     runs-on: ubuntu-latest
     environment: develop
     steps:
